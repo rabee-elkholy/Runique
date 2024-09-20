@@ -48,7 +48,7 @@ fun RuniqueActionBtn(
     val textAlpha by animateFloatAsState(targetValue = if (isLoading) 0f else 1f, label = "Text alpha animation")
 
     Button(
-        modifier = modifier.height(IntrinsicSize.Min),
+        modifier = modifier,
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,

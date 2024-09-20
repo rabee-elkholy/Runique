@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.plcoding.auth.presentation.R
 import com.plcoding.core.presentation.designsystem.LogoIcon
 import com.plcoding.core.presentation.designsystem.RuniqueTheme
@@ -78,7 +77,7 @@ fun IntroScreen(
             )
             Spacer(modifier = Modifier.size(16.dp))
             RuniqueOutlinedActionBtn(
-                text = stringResource(id = R.string.sign_in),
+                text = stringResource(id = R.string.login),
                 onClick = { onAction(IntroAction.OnSignInClick) }
             )
         }

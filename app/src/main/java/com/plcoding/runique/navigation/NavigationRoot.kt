@@ -9,8 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.plcoding.auth.presentation.intro.IntroScreenRoot
+import com.plcoding.auth.presentation.login.LoginScreenRoot
 import com.plcoding.auth.presentation.register.RegisterScreenRoot
-import kotlinx.serialization.Serializable
 
 @Composable
 fun NavigationRoot(
@@ -27,6 +27,7 @@ fun NavigationRoot(
             )
         }
         authNavGraph(navController = navController)
+        homeNavGraph(navController = navController)
     }
 }
 
@@ -38,12 +39,29 @@ private fun NavGraphBuilder.authNavGraph(
         startDestination = Screens.Auth.Register,
     ) {
         composable<Screens.Auth.Login> {
-            Text(text = "Login Screen")
+            LoginScreenRoot(
+                onSignUpClick = {
+                    navController.navigate(route = Screens.Auth.Register) {
+                        popUpTo(route = Screens.Auth.Login) {
+                            inclusive = true
+                            saveState = true
+                        }
+                        restoreState = true
+                    }
+                },
+                onLoginSuccess = {
+                    navController.navigate(route = Screens.Home.Run) {
+                        popUpTo(route = Screens.Auth) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
 
         composable<Screens.Auth.Register> {
             RegisterScreenRoot(
-                onSignInClick = {
+                onLoginClick = {
                     navController.navigate(route = Screens.Auth.Login) {
                         popUpTo(route = Screens.Auth.Register) {
                             inclusive = true
@@ -56,6 +74,18 @@ private fun NavGraphBuilder.authNavGraph(
                     navController.navigate(route = Screens.Auth.Login)
                 }
             )
+        }
+    }
+}
+
+private fun NavGraphBuilder.homeNavGraph(
+    navController: NavHostController
+) {
+    navigation<Screens.Home>(
+        startDestination = Screens.Home.Run,
+    ) {
+        composable<Screens.Home.Run> {
+            Text(text = "Run")
         }
     }
 }

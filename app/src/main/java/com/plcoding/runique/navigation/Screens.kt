@@ -9,11 +9,9 @@ sealed class Screens {
     data object Intro
 
     @Serializable
-    object App {
+    object Home {
         @Serializable
-        data class Home(
-            val name: String = "default",
-        )
+        data object Run
     }
 
     @Serializable

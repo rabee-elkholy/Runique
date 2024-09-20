@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -35,6 +36,7 @@ import com.plcoding.core.presentation.designsystem.RuniqueTheme
 import com.plcoding.core.presentation.designsystem.components.GradientBackground
 import com.plcoding.core.presentation.designsystem.components.PasswordRequirement
 import com.plcoding.core.presentation.designsystem.components.RuniqueActionBtn
+import com.plcoding.core.presentation.designsystem.components.RuniqueClickableText
 import com.plcoding.core.presentation.designsystem.components.RuniquePasswordTextField
 import com.plcoding.core.presentation.designsystem.components.RuniqueTextField
 import com.plcoding.core.presentation.ui.utils.ObserveOneTimeEvent
@@ -44,7 +46,7 @@ import org.koin.androidx.compose.koinViewModel
 @ExperimentalFoundationApi
 @Composable
 fun RegisterScreenRoot(
-    onSignInClick: () -> Unit,
+    onLoginClick: () -> Unit,
     onRegistrationSuccess: () -> Unit,
     viewModel: RegisterViewModel = koinViewModel(),
 ) {
@@ -60,7 +62,7 @@ fun RegisterScreenRoot(
                 )
                 onRegistrationSuccess()
             }
-            is RegisterEvent.RegistrationFailure -> {
+            is RegisterEvent.RegistrationError -> {
                 ToastUtils.showLongToast(
                     context = context,
                     message = event.message.asString(context),
@@ -73,7 +75,7 @@ fun RegisterScreenRoot(
     RegisterScreen(
         state = viewModel.state,
         onAction = viewModel::onAction,
-        onSignInClick = onSignInClick
+        onSignInClick = onLoginClick
     )
 }
 
@@ -106,40 +108,10 @@ fun RegisterScreen(
                 text = stringResource(id = R.string.create_account),
                 style = MaterialTheme.typography.headlineMedium
             )
-            val annotatedString = buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(
-                        fontFamily = Poppins,
-                        color = RuniqueGray
-                    )
-                ) {
-                    append(text = stringResource(id = R.string.already_have_an_account) + " ")
-                    pushStringAnnotation(
-                        tag = "clickable_text_sign_in",
-                        annotation = stringResource(id = R.string.sign_in)
-                    )
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.SemiBold,
-                            fontFamily = Poppins,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        append(stringResource(id = R.string.sign_in))
-                    }
-                }
-            }
-            ClickableText(
-                text = annotatedString,
-                onClick = { offset ->
-                    annotatedString.getStringAnnotations(
-                        tag = "clickable_text_sign_in",
-                        start = offset,
-                        end = offset
-                    ).firstOrNull()?.let {
-                        onSignInClick()
-                    }
-                }
+            RuniqueClickableText(
+                normalTextResId = R.string.already_have_an_account,
+                clickableTextResId = R.string.login,
+                onClickableTextClick = onSignInClick
             )
             Spacer(modifier = Modifier.height(48.dp))
             RuniqueTextField(

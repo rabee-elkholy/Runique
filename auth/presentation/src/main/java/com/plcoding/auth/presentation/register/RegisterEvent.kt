@@ -4,5 +4,5 @@ import com.plcoding.core.presentation.ui.utils.UiText
 
 sealed interface RegisterEvent {
     data object RegistrationSuccess : RegisterEvent
-    data class RegistrationFailure(val message: UiText) : RegisterEvent
+    data class RegistrationError(val message: UiText) : RegisterEvent
 }

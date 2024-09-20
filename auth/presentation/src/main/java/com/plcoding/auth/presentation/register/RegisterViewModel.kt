@@ -6,10 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plcoding.auth.domain.UserDataValidator
-import com.plcoding.auth.domain.repository.RegisterRepository
+import com.plcoding.auth.domain.repository.AuthRepository
 import com.plcoding.auth.presentation.R
 import com.plcoding.core.domain.utils.DataError
-import com.plcoding.core.domain.utils.EmptyDataResult
 import com.plcoding.core.domain.utils.Result
 import com.plcoding.core.presentation.ui.utils.UiText
 import com.plcoding.core.presentation.ui.utils.asUiText
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(
-    private val registerRepository: RegisterRepository,
+    private val authRepository: AuthRepository,
     private val userDataValidator: UserDataValidator
 ) : ViewModel() {
     var state by mutableStateOf(RegisterState())
@@ -41,7 +40,7 @@ class RegisterViewModel(
     private fun register() {
         viewModelScope.launch {
             state = state.copy(isRegistering = true)
-            val result = registerRepository.register(
+            val result = authRepository.register(
                 email = state.email.text.toString().trim(),
                 password = state.password.text.toString()
             )
@@ -56,13 +55,13 @@ class RegisterViewModel(
             is Result.Failure -> {
                 if (result.error == DataError.Network.CONFLICT)
                     eventChannel.send(
-                        RegisterEvent.RegistrationFailure(
+                        RegisterEvent.RegistrationError(
                             message = UiText.StringResource(
                                 R.string.error_email_exist
                             )
                         )
                     )
-                else eventChannel.send(RegisterEvent.RegistrationFailure(result.error.asUiText()))
+                else eventChannel.send(RegisterEvent.RegistrationError(result.error.asUiText()))
             }
 
             is Result.Success -> {
